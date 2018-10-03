@@ -37,7 +37,7 @@ app.get('/api', (req, res) => {
                     throw(error);
                 }
                 console.debug(body);
-                expressResponse.json(body);
+                expressResponse.json(JSON.parse(body));
             });
         },
         function(error){
@@ -82,6 +82,7 @@ function getApiToken(requestToken): Q.Promise<any> {
                 return deferred.resolve(dataAsJson.access_token);
             }    
             else {
+                console.error(res);
                 return deferred.reject(`Invalid response returned (${res.statusCode}): ${res.statusMessage}`);
             }        
         }    
