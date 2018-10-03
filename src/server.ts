@@ -9,7 +9,7 @@ var app = express();
 var apiKey = process.env.API_KEY;
 var apiHost = process.env.API_SERVICE_HOST;
 var appId = process.env.SERVER_APP_ID;
-var port = process.env.PORT || '3000';
+var port = process.env.PORT || '3001';
 
 let corsConfig = {
     origin:'*',
