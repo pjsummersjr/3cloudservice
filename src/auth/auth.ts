@@ -1,26 +1,60 @@
 import request from 'request';
 import q from 'q';
-
+/**
+ * Encapsulates much of the code required to get and use the on_behalf_of token
+ * 
+ * 10/3: Creates the access token. Does not submit the refresh token.
+ * TODO: Add code for caching this token.
+ * TODO: Add logic for creating a refresh token.
+ * TODO: Make this 'common' and not specific to an AAD tenant instance
+ */
 export default class Auth {
-    
+    /**
+     * The application ID generated for this application (WEB API) by Azure AD
+     * This is specific to each instance of your application so best to make this an environment variable.
+     */
     appId: string;
+    /**
+     * The app secret that can be generated for the app (WEB API) in Azure AD. 
+     * Do not define this in code. USE ENVIRONMENT VARIABLES!
+     */
     apiKey: string;
-    constructor(){        
+    /**
+     * The domain for your Azure AD tenant (e.g. microsoft.onmicrosoft.com)
+     * Not necessarily secret but because this will be specific to each instance of an this WEB API, best to make it an environment
+     * variable as well.
+     */
+    tenantId: string;
+
+    constructor(){     
+        this.loadEnvironmentVariables();   
+    }
+    /**
+     * Loads all of the environment variables. 
+     */
+    loadEnvironmentVariables(): void {
         this.appId = process.env.SERVER_APP_ID;
         this.apiKey = process.env.API_KEY;
+        this.tenantId = process.env.TENANT_ID;
     }
 
+    /**
+     * Asyncronously retrieves the on_behalf_of Bearer token from the resource
+     * @param requestToken - the access token from the calling client
+     * @param apiResource  - the base URL (not full path) of the resource you're requesting. If you're request https://graph.microsoft.com/v1.0/me, this value would be https://graph.microsoft.com
+     * @returns A promise containing (if successful) the Bearer token that can be added to a request for submitting an HTTP request to the specific resource
+     */
     getApiToken(requestToken, apiResource): Q.Promise<any> {
         var deferred = q.defer();
         
         var config = {
-            tenantid:"microsoft.onmicrosoft.com",
+            tenantid: this.tenantId,
             grant_type:"urn:ietf:params:oauth:grant-type:jwt-bearer",
             client_id: this.appId,
             client_secret: this.apiKey,
             assertion: requestToken,
             requested_token_use: "on_behalf_of",
-            resource:"https://graph.microsoft.com" //apiResource
+            resource:apiResource
         }
 
         console.log(config);
