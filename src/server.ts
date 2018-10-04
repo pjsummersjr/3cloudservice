@@ -3,6 +3,7 @@ import process from 'process';
 import request from 'request';
 import q from 'q';
 import cors from 'cors';
+import Auth  from './auth/auth';
 
 var app = express();
 
@@ -23,7 +24,9 @@ app.get('/api', (req, res) => {
     
     var expressResponse = res;
 
-    getApiToken(req.get('Authorization').split(' ')[1]).then(
+    let auth = new Auth();
+
+    auth.getApiToken(req.get('Authorization').split(' ')[1], "https://graph.microsoft.com").then(
         function(token) {
             var options = {
                 url: "https://graph.microsoft.com/v1.0/me/drive/root/children",
@@ -52,7 +55,7 @@ app.listen(port, () => {
 });
 
 
-function getApiToken(requestToken): Q.Promise<any> {
+/* function getApiToken(requestToken): Q.Promise<any> {
     var deferred = q.defer();
     var config = {
         tenantid:"microsoft.onmicrosoft.com",
@@ -88,5 +91,5 @@ function getApiToken(requestToken): Q.Promise<any> {
         }    
     )
     return deferred.promise;
-}
+} */
 
