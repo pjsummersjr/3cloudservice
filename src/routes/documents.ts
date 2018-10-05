@@ -45,11 +45,21 @@ router.get('/', (req, res) => {
                 }      
             }    
             request.get(options, function(error, graphResponse, body){
-                if(error){
-                    throw(error);
+                if(error) {
+                    console.error(error);
+                    expressResponse.status(500);
+                    expressResponse.send(error);
                 }
-                console.debug(body);
-                expressResponse.json(JSON.parse(body));
+                if(graphResponse.statusCode === 200){
+                    expressResponse.status(200);
+                    expressResponse.json(JSON.parse(body));
+                }
+                else {        
+                    console.error(`Error response from request URL (${graphResponse.statusCode}): ${graphResponse.statusMessage}`); 
+                    console.error(graphResponse);
+                    expressResponse.status(graphResponse.statusCode);
+                    expressResponse.send(graphResponse.statusMessage);
+                }
             });
         },
         function(error){
