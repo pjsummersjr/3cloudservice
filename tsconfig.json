@@ -1,6 +1,8 @@
 {
     "files": [
-        "src/server.ts"
+        "src/*.ts",
+        "src/auth/*.ts",
+        "src/routes/*.ts"
     ],
     "compilerOptions": {
         "module": "commonjs", //Use commonjs because that is what node uses
