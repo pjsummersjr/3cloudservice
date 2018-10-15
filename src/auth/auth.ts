@@ -36,6 +36,7 @@ export default class Auth {
         this.appId = process.env.SERVER_APP_ID;
         this.apiKey = process.env.API_KEY;
         this.tenantId = process.env.TENANT_ID;
+        console.log(`App ID: ${this.appId}\nAPI Key: ${this.apiKey}\nTenant ID: ${this.tenantId}`);
     }
 
     /**
@@ -53,12 +54,13 @@ export default class Auth {
             client_id: this.appId,
             client_secret: this.apiKey,
             assertion: requestToken,
-            requested_token_use: "on_behalf_of",
-            resource:apiResource
+            scope:"https://graph.microsoft.com/Files.Read https://graph.microsoft.com/files.read.all https://graph.microsoft.com/files.read https://graph.microsoft.com/Files.ReadWrite.All offline_access https://graph.microsoft.com/Sites.Read.All https://graph.microsoft.com/Sites.ReadWrite.All https://graph.microsoft.com/User.Read",// 00000007-0000-0000-c000-000000000000/78ce3f0f-a1ce-49c2-8cde-64b5c0896db4",
+            requested_token_use: "on_behalf_of"
         }
 
         console.log(config);
-        var requestString=`https://login.microsoftonline.com/${config.tenantid}/oauth2/token`;
+        //var requestString=`https://login.microsoftonline.com/${config.tenantid}/oauth2/token`;
+        var requestString=`https://login.microsoftonline.com/${config.tenantid}/oauth2/v2.0/token`;
         
         console.debug("==============RETRIEVING SERVICE ACCESS TOKEN===================");
         console.debug(requestString);
@@ -77,8 +79,8 @@ export default class Auth {
                     return deferred.resolve(dataAsJson.access_token);
                 }    
                 else {
-                    console.error(res);
-                    return deferred.reject(`Invalid response returned (${res.statusCode}): ${res.statusMessage}`);
+                    console.error(res.body);
+                    return deferred.reject(res.body);
                 }        
             }    
         )

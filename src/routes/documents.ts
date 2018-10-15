@@ -29,16 +29,27 @@ router.use((req, res, next) => {
     }  
 });
 
-router.get('/', (req, res) => {
-    
+router.get('/related/:accountname', (req, res) => {
+    console.log(`Retrieving related documents for ${req.params.accountname}`);
+    let resourceUrl = "https://graph.microsoft.com/v1.0/me/drive/root/children?$top=3"; //search(q='FM Global')";
+    resourceRequest(req, res, "https://graph.microsoft.com", resourceUrl);
+});
+
+router.get('/', (req, res) => { 
+    let resourceUrl = "https://graph.microsoft.com/v1.0/me/drive/root/children";
+    resourceRequest(req, res, "https://graph.microsoft.com", resourceUrl);
+
+});
+
+function resourceRequest(req, res, resource, resourceUrl) {
     var expressResponse = res;
 
     let auth = new Auth();
 
-    auth.getApiToken(authToken, apiResource).then(
+    auth.getApiToken(authToken, resource).then(
         function(token) {
             var options = {
-                url: "https://graph.microsoft.com/v1.0/me/drive/root/children",
+                url: resourceUrl,
                 headers: {
                     "Authorization": token,
                     "Content-Type": "application/json"
@@ -63,11 +74,10 @@ router.get('/', (req, res) => {
             });
         },
         function(error){
-            console.error(`Error returned from the getting API token:`);
-            console.error(error);
+            expressResponse.status(500);
+            expressResponse.json(JSON.parse(error));
         }
     );
-})
-
+}
 export default router;
 

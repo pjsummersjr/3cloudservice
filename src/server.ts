@@ -22,6 +22,10 @@ let corsConfig = {
 }
 
 app.use(cors(corsConfig));
+app.use((req, res, next) => {
+    console.log(`Received a request`);
+    next();
+})
 
 app.use('/api/docs', docsRouter);
 app.use('/api/engagements', engagementsRouter);
