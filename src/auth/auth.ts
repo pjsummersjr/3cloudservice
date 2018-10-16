@@ -56,10 +56,10 @@ export default class Auth {
             requested_token_use: "on_behalf_of",
             resource:apiResource
         }
-
-        console.log(config);
         var requestString=`https://login.microsoftonline.com/${config.tenantid}/oauth2/token`;
-        
+        console.log(`Requesting on_behalf_of access token for resource ${config.resource}`);
+
+        console.debug(config);
         console.debug("==============RETRIEVING SERVICE ACCESS TOKEN===================");
         console.debug(requestString);
         
@@ -71,9 +71,9 @@ export default class Auth {
                     return deferred.reject(error);
                 }
                 if(res && res.statusCode === 200) {
-                    console.log("Received valid token:");
+                    console.log("Received valid token for request");
                     let dataAsJson = JSON.parse(body);
-                    console.log(dataAsJson.access_token);
+                    console.debug(`Request token: ${dataAsJson.access_token}`);
                     return deferred.resolve(dataAsJson.access_token);
                 }    
                 else {

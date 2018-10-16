@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
 
     auth.getApiToken(authToken, apiResource).then(
         function(token) {
-            let crmUrl = "https://mtcprod.crm.dynamics.com/api/data/v8.2/msdyn_workorders?$top=50&$select=msdyn_name,mtc_title,mtc_goal,mtc_siebelaccountname,mtc_engagementlead,mtc_engagementnumber,msdyn_workorderid&$orderby=mtc_startdate asc&$filter=Microsoft.Dynamics.CRM.NextXMonths(PropertyName=@p1,PropertyValue=@p2)&@p1='mtc_startdate'&@p2=270";
+            let crmUrl = "https://mtcprod.crm.dynamics.com/api/data/v8.2/msdyn_workorders?$top=50&$select=msdyn_name,mtc_title,mtc_goal,mtc_siebelaccountname,mtc_engagementlead,mtc_engagementnumber,msdyn_workorderid,mtc_startdate&$orderby=mtc_startdate desc&$filter=contains(mtc_siebelaccountname,'MTC')";// AND Microsoft.Dynamics.CRM.NextXMonths(PropertyName=@p1,PropertyValue=@p2)&@p1='mtc_startdate'&@p2=270";
             let options = {
                 url: crmUrl,
                 headers: {

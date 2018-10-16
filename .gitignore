@@ -1,3 +1,6 @@
 node_modules
 dist
 .env
+.env-v1
+.env-v2
+crmJson.json
